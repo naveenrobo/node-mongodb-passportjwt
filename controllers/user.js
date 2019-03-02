@@ -125,7 +125,11 @@ module.exports = {
                                 else {
                                     return res.json({
                                         success: true,
-                                        token: `Bearer ${token}`
+                                        data : {
+                                            id : user.id,
+                                            name : user.name
+                                        },
+                                        token: `Bearer ${token}`,
                                     });
                                 }
                             });
@@ -178,6 +182,14 @@ module.exports = {
                 });
             }
 
+            if (!user) {
+                console.log('User not found!!!');
+                return res.status(400).json({
+                    status: true,
+                    message: 'Password reset successfully'
+                });
+            }
+
             try {
                 ses.sendResetMail(email, newPassword);
             } catch (err) {
@@ -195,8 +207,6 @@ module.exports = {
                             user
                                 .save()
                                 .then(() => {
-
-
                                     return res.json({
                                         status: true,
                                         message: "Password reset done"

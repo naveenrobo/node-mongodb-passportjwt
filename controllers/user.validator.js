@@ -84,26 +84,43 @@ module.exports = {
         user.year = !isEmpty(user.year) ? user.year : '';
 
         user.role = !isEmpty(user.role) ? user.role : '';
+        data.role = !isEmpty(data.role) ? data.role : '';
 
         console.log(user.role, config.ROLE.ADMIN)
         console.log(user.role, config.ROLE.SU)
-    
-        if (user.role != config.ROLE.ADMIN && user.role != config.ROLE.SU) {
+
+        if(user.role == config.ROLE.SU) {
+            return {
+                reason: "making way for super user",
+                hasPermission: true
+            }
+        }
+
+        //Reject users from adding another user
+        if (user.role != config.ROLE.ADMIN) {
             return {
                 reason: "You don't have sufficient role to add a user",
                 hasPermission: false
             }
         }
-        
+        //adding admin/anyone from adding user of another year
         if (data.year != user.year) {
             return {
                 reason: "You are not authorized to add a user for another year",
                 hasPermission: false
             }
         }
+        //reject users/admins from adding superuser
+        if (data.role == config.ROLE.SU) {
+            return {
+                reason: "Do you think i am an idiot?",
+                hasPermission: false
+            }
+        }
+
         return {
             reason: null,
-            hasPermission: true
+            hasPermission: false
         }
     },
     validateChangePassword: (data) => {

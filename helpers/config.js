@@ -1,5 +1,5 @@
 module.exports = {
-    DB: "db password",
+    DB: "mongodb+srv://naveen:pass@forum-rdheq.mongodb.net/forum?retryWrites=true",
     SALT: 10,
     ROLE : {
         ADMIN : 0,

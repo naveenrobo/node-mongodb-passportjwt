@@ -44,7 +44,7 @@ module.exports = {
             ],
         };
        
-        return sendPromise = new AWS.SES({
+        return new AWS.SES({
             apiVersion: '2010-12-01'
         }).sendEmail(params).promise();
 

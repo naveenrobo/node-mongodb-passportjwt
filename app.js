@@ -1,10 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const logger = require('morgan');
+
+const fs = require('fs')
+const morgan = require('morgan')
+const path = require('path')
+var rfs = require('rotating-file-stream')
+
 const passport = require('passport');
 
 const config = require('./helpers/config')
-const { handle404Error, handleDevErrors } = require('./helpers/errorHandler');
+const {
+    handle404Error,
+    handleDevErrors
+} = require('./helpers/errorHandler');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
@@ -22,7 +30,16 @@ mongoose.connect(config.DB, {
 
 var app = express();
 
-app.use(logger('dev'));
+var logDirectory = path.join(__dirname, 'log')
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
+var accessLogStream = rfs('access.log', {
+    interval: '1d',
+    path: logDirectory
+})
+app.use(morgan('combined', {
+    stream: accessLogStream
+}))
+
 app.use(express.json());
 app.use(express.urlencoded({
     extended: false
